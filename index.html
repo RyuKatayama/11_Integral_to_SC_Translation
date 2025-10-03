@@ -1,0 +1,846 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>インテグラル理論 → 構造構成主義への圏論的翻訳</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Yu Gothic', 'Meiryo', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #f093fb 50%, #fce4ec 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .presentation-container {
+            width: 1400px;
+            height: 788px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+            position: relative;
+        }
+
+        .slide {
+            width: 100%;
+            height: 100%;
+            padding: 50px 60px;
+            display: none;
+            position: relative;
+            overflow-y: auto;
+        }
+
+        .slide.active {
+            display: block;
+        }
+
+        .slide-header {
+            text-align: center;
+            margin-bottom: 30px;
+            border-bottom: 4px solid #e91e63;
+            padding-bottom: 15px;
+        }
+
+        .slide-header h1 {
+            font-size: 2em;
+            color: #1a202c;
+            margin-bottom: 8px;
+            background: linear-gradient(135deg, #667eea, #e91e63);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .slide-header .subtitle {
+            font-size: 1.2em;
+            color: #4a5568;
+            font-weight: 500;
+        }
+
+        .content-section {
+            margin: 25px 0;
+        }
+
+        .section-title {
+            font-size: 1.4em;
+            color: #e91e63;
+            font-weight: bold;
+            margin-bottom: 15px;
+            padding-left: 15px;
+            border-left: 5px solid #e91e63;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            font-size: 0.7em;
+        }
+
+        th {
+            background: linear-gradient(135deg, #667eea, #e91e63);
+            color: white;
+            padding: 10px;
+            text-align: left;
+            font-weight: bold;
+        }
+
+        td {
+            padding: 10px;
+            border: 2px solid #e2e8f0;
+            background: #f7fafc;
+        }
+
+        tr:nth-child(even) td {
+            background: #edf2f7;
+        }
+
+        .process-flow {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 25px 0;
+            gap: 15px;
+        }
+
+        .process-box {
+            background: linear-gradient(135deg, #f7fafc, #edf2f7);
+            border: 3px solid #e91e63;
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            min-width: 200px;
+            flex: 1;
+        }
+
+        .process-box .title {
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #2d3748;
+            margin-bottom: 10px;
+        }
+
+        .process-box .desc {
+            font-size: 0.9em;
+            color: #4a5568;
+            line-height: 1.5;
+        }
+
+        .arrow {
+            font-size: 2em;
+            color: #e91e63;
+            font-weight: bold;
+        }
+
+        .highlight-box {
+            background: linear-gradient(135deg, #fff5e6 0%, #ffe6cc 100%);
+            border-left: 6px solid #ff9800;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+        }
+
+        .key-concept-box {
+            background: linear-gradient(135deg, #ffe6f0 0%, #ffc9dd 100%);
+            border: 3px solid #e91e63;
+            border-radius: 12px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .preservation-box {
+            background: linear-gradient(135deg, #d4edda 0%, #a3d9a5 100%);
+            border: 3px solid #28a745;
+            border-radius: 12px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .transformation-box {
+            background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+            border: 3px solid #2196f3;
+            border-radius: 12px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .integral-box {
+            background: linear-gradient(135deg, #f3e8ff 0%, #e9d5ff 100%);
+            border: 3px solid #8b5cf6;
+            border-radius: 12px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+
+        .sc-box {
+            background: linear-gradient(135deg, #fce4ec 0%, #f8bbd0 100%);
+            border: 3px solid #e91e63;
+            border-radius: 12px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+
+        .subject-card {
+            background: white;
+            border: 3px solid #e91e63;
+            border-radius: 10px;
+            padding: 12px;
+            margin: 12px 0;
+            font-size: 0.85em;
+        }
+
+        .subject-title {
+            font-size: 1em;
+            font-weight: bold;
+            color: #c2185b;
+            margin-bottom: 8px;
+        }
+
+        .concern-label {
+            font-weight: bold;
+            color: #d32f2f;
+            margin-top: 6px;
+            font-size: 0.95em;
+        }
+
+        .dialogue-box {
+            background: linear-gradient(135deg, #f3e5f5 0%, #e1bee7 100%);
+            border: 3px solid #9c27b0;
+            border-radius: 12px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+
+        .dialogue-turn {
+            margin: 8px 0;
+            padding: 8px;
+            background: white;
+            border-radius: 6px;
+            font-size: 0.85em;
+        }
+
+        .speaker {
+            font-weight: bold;
+            color: #6a1b9a;
+        }
+
+        .navigation {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 15px;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 15px 25px;
+            border-radius: 50px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            z-index: 1000;
+        }
+
+        .nav-btn {
+            padding: 12px 30px;
+            background: #e91e63;
+            color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 1em;
+            transition: all 0.3s ease;
+        }
+
+        .nav-btn:hover:not(:disabled) {
+            background: #d81b60;
+            transform: translateY(-2px);
+        }
+
+        .nav-btn:disabled {
+            background: #cbd5e0;
+            cursor: not-allowed;
+        }
+
+        .slide-number {
+            position: absolute;
+            bottom: 20px;
+            right: 30px;
+            color: #a0aec0;
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+
+        ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        ul li {
+            padding-left: 25px;
+            position: relative;
+            margin-bottom: 10px;
+            line-height: 1.6;
+        }
+
+        ul li:before {
+            content: "▶";
+            position: absolute;
+            left: 0;
+            color: #e91e63;
+            font-size: 0.8em;
+        }
+
+        strong {
+            color: #2d3748;
+        }
+
+        .formula {
+            font-family: 'Courier New', monospace;
+            background: #fff5f7;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            text-align: center;
+            font-size: 1.1em;
+            border: 2px solid #e91e63;
+        }
+
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="presentation-container">
+        <!-- Slide 1: タイトル -->
+        <div class="slide active">
+            <div class="slide-header">
+                <h1>インテグラル理論 → 構造構成主義</h1>
+                <div class="subtitle">圏論的翻訳メカニズムの実例</div>
+            </div>
+
+            <div class="key-concept-box">
+                <h3 style="color: #c2185b; margin-bottom: 15px; font-size: 1.3em;">翻訳の全体像</h3>
+                <div class="formula">
+                    翻訳 = π_SC ∘ 変換_{全象限→(I∪We)} ∘ embed_Integral
+                </div>
+                <p style="margin-top: 15px; font-size: 1.1em; color: #2d3748; line-height: 1.8;">
+                    包括的な統合理論を、<br>
+                    人間科学の意味構成理論へと<br>
+                    <strong style="color: #d32f2f;">次元圧縮しながら変換</strong>する
+                </p>
+            </div>
+
+            <div class="process-flow">
+                <div class="process-box" style="background: linear-gradient(135deg, #f3e8ff, #e9d5ff); border-color: #8b5cf6;">
+                    <div class="title" style="color: #6b21a8;">ステップ1</div>
+                    <div class="desc">埋め込み<br>Embedding</div>
+                </div>
+                <div class="arrow">→</div>
+                <div class="process-box" style="background: linear-gradient(135deg, #ffe6f0, #ffc9dd); border-color: #e91e63;">
+                    <div class="title" style="color: #c2185b;">ステップ2</div>
+                    <div class="desc">象限変換<br>Transformation</div>
+                </div>
+                <div class="arrow">→</div>
+                <div class="process-box" style="background: linear-gradient(135deg, #fce4ec, #f8bbd0); border-color: #e91e63;">
+                    <div class="title" style="color: #ad1457;">ステップ3</div>
+                    <div class="desc">射影<br>Projection</div>
+                </div>
+            </div>
+
+            <div class="integral-box">
+                <h3 style="color: #6b21a8; margin-bottom: 10px;">インテグラル理論の視点</h3>
+                <p style="line-height: 1.7;">
+                    <strong>4象限×5要素構造:</strong> 串カツ店主の意識発達、川口住民の葛藤、ベトナム人労働者の孤独を、全象限・発達段階で統合的に理解する。
+                </p>
+            </div>
+
+            <div class="sc-box">
+                <h3 style="color: #c2185b; margin-bottom: 10px;">構造構成主義の視点</h3>
+                <p style="line-height: 1.7;">
+                    <strong>関心相関的現実:</strong> 各主体が「店を続けたい」「安全に暮らしたい」「尊重されたい」という<strong>等しく妥当な関心</strong>を持つ。
+                </p>
+            </div>
+
+            <div class="highlight-box">
+                <strong style="font-size: 1.2em;">本スライドの構成：</strong><br>
+                スライド2: ステップ1 - インテグラル理論の全象限理解<br>
+                スライド3: ステップ2 - 全象限から(I∪We)象限への変換<br>
+                スライド4: 7つのSubjectの関心（Part 1）<br>
+                スライド5: 7つのSubjectの関心（Part 2）<br>
+                スライド6: 関心の多様性と対話の可能性<br>
+                スライド7: 完全な翻訳例と発達段階の消失
+            </div>
+
+            <div class="slide-number">1/7</div>
+        </div>
+
+        <!-- Slide 2: ステップ1 埋め込み -->
+        <div class="slide">
+            <div class="slide-header">
+                <h1>ステップ1: 埋め込み (Embedding)</h1>
+                <div class="subtitle">embed_Integral: インテグラル理論 → M⁶⁵|全象限</div>
+            </div>
+
+            <div class="content-section">
+                <div class="section-title">インテグラル理論の統合的理解（簡約版）</div>
+                
+                <div class="integral-box">
+                    <h4 style="color: #6b21a8; margin-bottom: 8px;">4象限での理解</h4>
+                    <ul style="font-size: 0.85em;">
+                        <li><strong>I象限（個人内面）:</strong> 店主の意識発達（慣習的→後慣習的→統合的）、川口住民の葛藤（恐怖・罪悪感）、ベトナム人の孤独</li>
+                        <li><strong>It象限（個人外面）:</strong> 労働力データ（コンビニ7%）、健康被害、スキル習得</li>
+                        <li><strong>We象限（集合内面）:</strong> 文化的発達段階（排外主義→伝統重視→人権重視→多文化共生）、世代間価値観対立</li>
+                        <li><strong>Its象限（集合外面）:</strong> 入管制度の構造的問題、労働市場の変化</li>
+                    </ul>
+                </div>
+
+                <div class="integral-box">
+                    <h4 style="color: #6b21a8; margin-bottom: 8px;">5要素構造</h4>
+                    <ul style="font-size: 0.85em;">
+                        <li><strong>Levels（発達段階）:</strong> 前慣習的（排外主義）→慣習的（伝統重視）→後慣習的（人権重視）→統合的（多文化共生）</li>
+                        <li><strong>Lines（発達ライン）:</strong> 認知・感情・道徳・文化ラインの不均等発達</li>
+                        <li><strong>States（意識状態）:</strong> 恐怖状態、共感状態、対立状態、統合状態</li>
+                        <li><strong>Types（個性類型）:</strong> 保守型、革新型、実利型、理想型</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="key-concept-box">
+                <h3 style="color: #c2185b; margin-bottom: 10px;">インテグラル理論の特徴</h3>
+                <p style="line-height: 1.7;">
+                    インテグラル理論は、外国人受け入れ問題を<strong>全象限・5要素構造</strong>で統合的に理解する。<br>
+                    特に、<strong>発達段階</strong>という垂直的次元により、「保守的高齢者は慣習的段階」「若い会社員は後慣習的段階」と客観的に分析する。
+                </p>
+            </div>
+
+            <div class="slide-number">2/7</div>
+        </div>
+
+        <!-- Slide 3: ステップ2 象限変換 -->
+        <div class="slide">
+            <div class="slide-header">
+                <h1>ステップ2: 象限変換 (Transformation)</h1>
+                <div class="subtitle">変換: M⁶⁵|全象限 → M⁶⁵|(I∪We)</div>
+            </div>
+
+            <div class="content-section">
+                <div class="section-title">統合的理解から関心相関的理解へ</div>
+                <table style="font-size: 0.75em;">
+                    <thead>
+                        <tr>
+                            <th style="width: 15%;">要素</th>
+                            <th style="width: 35%;">全象限での表現</th>
+                            <th style="width: 35%;">(I∪We)象限への変換</th>
+                            <th style="width: 15%;">変換の性質</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Observer</strong></td>
+                            <td>統合的自己(全象限で発達)</td>
+                            <td>関心志向構成主体(Subject)</td>
+                            <td style="color: #d32f2f; font-weight: bold;">統合主体→個人へ</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Focus</strong></td>
+                            <td>統合的課題(4象限×5要素)</td>
+                            <td>主観的関心・価値</td>
+                            <td style="color: #d32f2f; font-weight: bold;">多次元課題→関心へ</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Method</strong></td>
+                            <td>統合的実践</td>
+                            <td>関心相関的方法</td>
+                            <td style="color: #d32f2f; font-weight: bold;">統合実践→探求へ</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Construction</strong></td>
+                            <td>統合的理解</td>
+                            <td>能動的意味構成</td>
+                            <td style="color: #d32f2f; font-weight: bold;">包括理解→意味へ</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Target</strong></td>
+                            <td>統合的意識</td>
+                            <td>関心相関的現実</td>
+                            <td style="color: #d32f2f; font-weight: bold;">意識発達→妥当性へ</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="transformation-box">
+                <h3 style="color: #1565c0; margin-bottom: 10px;">統合的洞察から関心への変換例</h3>
+                <table style="font-size: 0.8em; margin-top: 10px;">
+                    <thead>
+                        <tr>
+                            <th style="width: 50%;">インテグラル理論での統合的理解</th>
+                            <th style="width: 50%;">構造構成主義での関心相関的理解</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>I象限: 店主の意識発達（慣習的→後慣習的→統合的）</td>
+                            <td>「グエンさんと共に働きたい」という関心</td>
+                        </tr>
+                        <tr>
+                            <td>It象限: 労働力データ（コンビニ外国人7%）</td>
+                            <td>「人手不足を解決したい」という関心</td>
+                        </tr>
+                        <tr>
+                            <td>We象限: 文化的発達段階の多様性</td>
+                            <td>「伝統を守りたい」vs「多文化共生したい」という関心の相違</td>
+                        </tr>
+                        <tr>
+                            <td>「保守的高齢者は慣習的段階」という発達段階分析</td>
+                            <td>「日本の伝統を守りたい」という、その人にとって妥当な関心</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="key-concept-box">
+                <h3 style="color: #c2185b; margin-bottom: 10px;">重要な変換</h3>
+                <p style="line-height: 1.7; font-size: 0.95em;">
+                    インテグラル理論の<strong>「発達段階」という客観的分析</strong>が、<br>
+                    構造構成主義では<strong>「関心の相違」という主観的経験</strong>へと変換される。<br>
+                    「進んでいる/遅れている」という序列は消え、「異なる関心を持つ」という水平的多様性になる。
+                </p>
+            </div>
+
+            <div class="slide-number">3/7</div>
+        </div>
+
+        <!-- Slide 4: Subject 1-4 -->
+        <div class="slide">
+            <div class="slide-header">
+                <h1>ステップ3: 射影 (Projection) - Part 1</h1>
+                <div class="subtitle">π_SC: M⁶⁵|(I∪We) → 構造構成主義</div>
+            </div>
+
+            <div class="content-section">
+                <div class="section-title">7つのSubjectの関心（1/2）</div>
+                
+                <div class="subject-card">
+                    <div class="subject-title">Subject 1: 串カツ店経営者（60代男性）</div>
+                    <div class="concern-label">Concern:</div>
+                    <p style="font-size: 0.9em; line-height: 1.5;">
+                        「『店を続けたい』『お客さんに喜んでもらいたい』。ベトナム人のグエンさんを雇った。最初は不安だったが、彼女は真面目。」
+                    </p>
+                    <div class="concern-label">Reality:</div>
+                    <p style="font-size: 0.9em;">「外国人受け入れは、私の店にとって必要で妥当」</p>
+                    <div style="margin-top: 6px; padding: 6px; background: #f3e8ff; border-radius: 4px; font-size: 0.8em;">
+                        <strong>インテグラル:</strong> 意識発達（慣習的→後慣習的→統合的）<br>
+                        <strong>構造構成主義:</strong> 「店を続けたい」という実務的関心
+                    </div>
+                </div>
+
+                <div class="subject-card">
+                    <div class="subject-title">Subject 2: 川口市住民（50代女性）</div>
+                    <div class="concern-label">Concern:</div>
+                    <p style="font-size: 0.9em; line-height: 1.5;">
+                        「『静かに安全に暮らしたい』『これまで通りの生活を続けたい』。クルド人が増えて、夜騒がしい。」
+                    </p>
+                    <div class="concern-label">Reality:</div>
+                    <p style="font-size: 0.9em;">「外国人受け入れは慎重にすべき」</p>
+                    <div style="margin-top: 6px; padding: 6px; background: #f3e8ff; border-radius: 4px; font-size: 0.8em;">
+                        <strong>インテグラル:</strong> 慣習的段階、感情的ラインの前慣習的側面<br>
+                        <strong>構造構成主義:</strong> 「安全に暮らしたい」という妥当な関心
+                    </div>
+                </div>
+
+                <div class="subject-card">
+                    <div class="subject-title">Subject 3: ベトナム人技能実習生（20代女性）</div>
+                    <div class="concern-label">Concern:</div>
+                    <p style="font-size: 0.9em; line-height: 1.5;">
+                        「『家族を助けたい』『技術を学びたい』『日本人の友達が欲しい』『人間として尊重されたい』。でも日本人は冷たい。」
+                    </p>
+                    <div class="concern-label">Reality:</div>
+                    <p style="font-size: 0.9em;">「日本で頑張ることが妥当」</p>
+                    <div style="margin-top: 6px; padding: 6px; background: #f3e8ff; border-radius: 4px; font-size: 0.8em;">
+                        <strong>インテグラル:</strong> I象限（孤独・屈辱）、慣習的→後慣習的移行<br>
+                        <strong>構造構成主義:</strong> 「尊重されたい」という普遍的関心
+                    </div>
+                </div>
+
+                <div class="subject-card">
+                    <div class="subject-title">Subject 4: 若い会社員（30代男性）</div>
+                    <div class="concern-label">Concern:</div>
+                    <p style="font-size: 0.9em; line-height: 1.5;">
+                        「『多様性は当然』『外国人と普通に共生したい』。職場にも外国人が多い。外国人が増えて困る人の気持ちがわからない。」
+                    </p>
+                    <div class="concern-label">Reality:</div>
+                    <p style="font-size: 0.9em;">「外国人受け入れは当然」</p>
+                </div>
+            </div>
+
+            <div class="slide-number">4/7</div>
+        </div>
+
+        <!-- Slide 5: Subject 5-7 -->
+        <div class="slide">
+            <div class="slide-header">
+                <h1>ステップ3: 射影 (Projection) - Part 2</h1>
+                <div class="subtitle">7つのSubjectの関心（2/2）</div>
+            </div>
+
+            <div class="content-section">
+                <div class="subject-card">
+                    <div class="subject-title">Subject 5: 保守的高齢者（70代男性）</div>
+                    <div class="concern-label">Concern:</div>
+                    <p style="font-size: 0.9em; line-height: 1.5;">
+                        「『日本の伝統・文化を守りたい』『日本らしさを失いたくない』。戦後の日本を見てきた。日本人だけで発展させた。これは差別ではなく、日本を愛しているから。」
+                    </p>
+                    <div class="concern-label">Reality:</div>
+                    <p style="font-size: 0.9em;">「外国人受け入れは慎重にすべき」</p>
+                    <div style="margin-top: 6px; padding: 6px; background: #f3e8ff; border-radius: 4px; font-size: 0.8em;">
+                        <strong>インテグラル:</strong> 慣習的段階（伝統重視）<br>
+                        <strong>構造構成主義:</strong> 「伝統を守りたい」という価値観に基づく関心
+                    </div>
+                </div>
+
+                <div class="subject-card">
+                    <div class="subject-title">Subject 6: NGO活動家（40代女性）</div>
+                    <div class="concern-label">Concern:</div>
+                    <p style="font-size: 0.9em; line-height: 1.5;">
+                        「『外国人の人権を守りたい』『公正な社会を作りたい』。技能実習生の人権侵害を多く見てきた。でも最近気づいた—私は外国人を『支援する対象』と見ていたが、『共に生きるパートナー』なのでは？」
+                    </p>
+                    <div class="concern-label">Reality:</div>
+                    <p style="font-size: 0.9em;">「制度変革が必要」→「共に生きたい」（関心の変化）</p>
+                </div>
+
+                <div class="subject-card">
+                    <div class="subject-title">Subject 7: 中小企業経営者（50代男性）</div>
+                    <div class="concern-label">Concern:</div>
+                    <p style="font-size: 0.9em; line-height: 1.5;">
+                        「『会社を存続させたい』『従業員（日本人も外国人も）を幸せにしたい』。外国人労働者20人を雇用。彼らがいなければ会社は成り立たない。日本語教室を開き、住環境を整えている。」
+                    </p>
+                    <div class="concern-label">Reality:</div>
+                    <p style="font-size: 0.9em;">「外国人と共に会社を作る」</p>
+                </div>
+            </div>
+
+            <div class="sc-box">
+                <h3 style="color: #c2185b; margin-bottom: 10px;">構造構成主義の核心</h3>
+                <p style="line-height: 1.7; font-size: 0.95em;">
+                    各Subjectは異なるConcernを持つ。これらは<strong>どれが正しい/間違っている、発達している/遅れている</strong>ということはない。<br>
+                    各主体の生活文脈・価値観に相関して、それぞれに<strong>等しく妥当な現実</strong>が構成されている。
+                </p>
+            </div>
+
+            <div class="slide-number">5/7</div>
+        </div>
+
+        <!-- Slide 6: 関心の対話 -->
+        <div class="slide">
+            <div class="slide-header">
+                <h1>関心の多様性と対話の可能性</h1>
+                <div class="subtitle">構造構成主義の強み</div>
+            </div>
+
+            <div class="content-section">
+                <div class="section-title">関心の対話による相互理解</div>
+                
+                <div class="dialogue-box">
+                    <h4 style="color: #6a1b9a; margin-bottom: 10px;">川口市住民（保守的）とNGO活動家（リベラル）の対話</h4>
+                    
+                    <div class="dialogue-turn">
+                        <span class="speaker">住民:</span> 「あなたたちは『外国人の人権』と言うが、私たち住民の安全はどうなるのか？」
+                    </div>
+                    
+                    <div class="dialogue-turn">
+                        <span class="speaker">活動家:</span> 「それは考えていなかった。あなたの関心は『安全』なんですね。私の関心は『人権』でした。でも、両方とも大切な関心です。」
+                    </div>
+                    
+                    <div class="dialogue-turn">
+                        <span class="speaker">住民:</span> 「私は外国人が嫌いなわけじゃない。ただ、ルールを守ってほしい。夜中に騒がれると、眠れないんです。」
+                    </div>
+                    
+                    <div class="dialogue-turn">
+                        <span class="speaker">活動家:</span> 「なるほど。では、外国人コミュニティのリーダーと話して、日本の生活ルールを伝える機会を作りましょう。」
+                    </div>
+                    
+                    <div class="dialogue-turn">
+                        <span class="speaker">住民:</span> 「それなら、協力できるかもしれない。私も、みんなが安心して暮らせる街にしたいんです。」
+                    </div>
+                </div>
+
+                <div class="key-concept-box">
+                    <h3 style="color: #c2185b; margin-bottom: 10px;">対話による関心の統合</h3>
+                    <p style="line-height: 1.7;">
+                        この対話により、<strong>互いの関心を理解</strong>し、<strong>関心を統合する方法</strong>を探ることができる。<br>
+                        「賛成vs反対」「進歩的vs保守的」「発達 vs 遅れている」という<strong>序列や対立</strong>ではなく、<br>
+                        「それぞれ異なる関心を持っている」という<strong>平等な立場</strong>からの対話が可能になる。
+                    </p>
+                </div>
+            </div>
+
+            <div class="comparison-grid">
+                <div class="integral-box">
+                    <h4 style="color: #6b21a8; margin-bottom: 8px;">インテグラル理論のアプローチ</h4>
+                    <p style="font-size: 0.85em; line-height: 1.5;">
+                        「慣習的段階の人と後慣習的段階の人の対話」という<strong>発達段階の差異</strong>を前提。<br>
+                        より発達した段階の人が、より包括的に理解できる、という非対称性がある。
+                    </p>
+                </div>
+
+                <div class="sc-box">
+                    <h4 style="color: #c2185b; margin-bottom: 8px;">構造構成主義のアプローチ</h4>
+                    <p style="font-size: 0.85em; line-height: 1.5;">
+                        各主体の関心は<strong>等しく妥当</strong>であり、対話は<strong>対等</strong>。<br>
+                        「あなたはどんな関心を持っていますか？」という問いから始まる平等な対話。
+                    </p>
+                </div>
+            </div>
+
+            <div class="slide-number">6/7</div>
+        </div>
+
+        <!-- Slide 7: 完全な翻訳例と検証 -->
+        <div class="slide">
+            <div class="slide-header">
+                <h1>完全な翻訳例と発達段階の消失</h1>
+                <div class="subtitle">翻訳 = π_SC ∘ 変換_{全象限→(I∪We)} ∘ embed_Integral</div>
+            </div>
+
+            <div class="content-section">
+                <div class="section-title">翻訳における本質的変化</div>
+                
+                <table style="font-size: 0.8em;">
+                    <thead>
+                        <tr>
+                            <th style="width: 25%;">側面</th>
+                            <th style="width: 37.5%;">インテグラル理論</th>
+                            <th style="width: 37.5%;">構造構成主義</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>現象の捉え方</strong></td>
+                            <td>全象限での統合的理解・発達段階分析</td>
+                            <td>各主体の関心相関的現実構成</td>
+                        </tr>
+                        <tr>
+                            <td><strong>主体</strong></td>
+                            <td>統合的自己(全象限で発達)</td>
+                            <td>関心を持つ個人Subject</td>
+                        </tr>
+                        <tr>
+                            <td><strong>「発達段階」</strong></td>
+                            <td>客観的な意識の進化段階</td>
+                            <td>（概念なし）各主体の関心の相違</td>
+                        </tr>
+                        <tr>
+                            <td><strong>「川口住民の不安」</strong></td>
+                            <td>慣習的段階、感情的ラインの前慣習的側面</td>
+                            <td>「安全に暮らしたい」という妥当な関心</td>
+                        </tr>
+                        <tr>
+                            <td><strong>評価基準</strong></td>
+                            <td>統合性・発達段階の高さ</td>
+                            <td>妥当性（文脈での合理性）</td>
+                        </tr>
+                        <tr>
+                            <td><strong>多様性の意味</strong></td>
+                            <td>発達段階・ラインの多様性（垂直的）</td>
+                            <td>関心の多様性（水平的・序列なし）</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 15px;">
+                <div class="preservation-box">
+                    <h3 style="color: #2e7d32; margin-bottom: 10px;">保存された構造</h3>
+                    <ul style="font-size: 0.85em;">
+                        <li>6要素プロセスの循環構造</li>
+                        <li>「多様な主体」は「多様なSubject」として保存</li>
+                        <li>変革・実践の重要性は保持</li>
+                    </ul>
+                </div>
+
+                <div class="transformation-box">
+                    <h3 style="color: #1565c0; margin-bottom: 10px;">消失・変換された要素</h3>
+                    <ul style="font-size: 0.85em;">
+                        <li>象限: 全象限 → (I∪We)</li>
+                        <li><strong>「発達段階」という垂直的次元が消失</strong></li>
+                        <li>序列から平等へ、対立から対話へ</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="key-concept-box" style="margin-top: 15px;">
+                <h3 style="color: #c2185b; margin-bottom: 10px;">翻訳の本質と相補性</h3>
+                <p style="line-height: 1.6; font-size: 0.95em;">
+                    <strong>インテグラル理論:</strong> 「保守的高齢者は<span style="color: #8b5cf6;">慣習的段階</span>」（客観的発達段階分析）<br>
+                    <strong>構造構成主義:</strong> 「<span style="color: #e91e63;">伝統を守りたい</span>という、その人にとって妥当な関心」<br><br>
+                    これは対立ではなく、<strong>異なる象限からの相補的理解</strong>：<br>
+                    ・インテグラル理論: 「なぜ異なる関心が生まれるのか」（発達段階・ライン）を理解<br>
+                    ・構造構成主義: 「各関心を等しく尊重し、対話する」方法を実践<br><br>
+                    <strong>ある対話ファシリテーターの統合実践:</strong> インテグラル理論は私の<strong>内的理解の道具</strong>、構造構成主義は私の<strong>対話実践の姿勢</strong>。両方を使うことで、より深い対話が可能になる。
+                </p>
+            </div>
+
+            <div class="slide-number">7/7</div>
+        </div>
+    </div>
+
+    <div class="navigation">
+        <button class="nav-btn" id="prevBtn">← 前へ</button>
+        <button class="nav-btn" id="nextBtn">次へ →</button>
+    </div>
+
+    <script>
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+        const totalSlides = slides.length;
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+
+        function showSlide(n) {
+            slides[currentSlide].classList.remove('active');
+            currentSlide = (n + totalSlides) % totalSlides;
+            slides[currentSlide].classList.add('active');
+            
+            prevBtn.disabled = currentSlide === 0;
+            nextBtn.disabled = currentSlide === totalSlides - 1;
+            
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        prevBtn.addEventListener('click', () => {
+            if (currentSlide > 0) {
+                showSlide(currentSlide - 1);
+            }
+        });
+
+        nextBtn.addEventListener('click', () => {
+            if (currentSlide < totalSlides - 1) {
+                showSlide(currentSlide + 1);
+            }
+        });
+
+        showSlide(0);
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight' && currentSlide < totalSlides - 1) {
+                showSlide(currentSlide + 1);
+            } else if (e.key === 'ArrowLeft' && currentSlide > 0) {
+                showSlide(currentSlide - 1);
+            }
+        });
+    </script>
+</body>
+</html>
